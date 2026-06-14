@@ -1,7 +1,17 @@
 # tt
 
+[![CI](https://github.com/tamnd/tiktok-cli/actions/workflows/ci.yml/badge.svg)](https://github.com/tamnd/tiktok-cli/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/tamnd/tiktok-cli)](https://github.com/tamnd/tiktok-cli/releases/latest)
+[![Go Reference](https://pkg.go.dev/badge/github.com/tamnd/tiktok-cli.svg)](https://pkg.go.dev/github.com/tamnd/tiktok-cli)
+[![Go Report Card](https://goreportcard.com/badge/github.com/tamnd/tiktok-cli)](https://goreportcard.com/report/github.com/tamnd/tiktok-cli)
+[![License](https://img.shields.io/github/license/tamnd/tiktok-cli)](./LICENSE)
+
 A command line for TikTok. `tt` reads public TikTok data and prints clean,
 pipeable records. One pure-Go binary, no API key, no login.
+
+[Install](#install) • [Commands](#commands) • [Usage](#usage) • [Two planes](#two-planes-two-reliabilities) • [Serve](#serve-it)
+
+![tt reading a video into a table and piping it through jq](docs/static/demo.gif)
 
 It reads the same public surface a logged-out browser sees: the server rendered
 universal-data blob embedded in each page, and the `www.tiktok.com/api/*`
@@ -24,6 +34,28 @@ or run the container image:
 ```bash
 docker run --rm ghcr.io/tamnd/tiktok:latest --help
 ```
+
+Shell completion is built in: `tt completion bash|zsh|fish|powershell`.
+
+## Commands
+
+| Command | Reads |
+| --- | --- |
+| `tt video <url-or-id>` | one video record |
+| `tt user <handle>` | a profile record |
+| `tt posts <handle>` | a user's public videos |
+| `tt comments <url-or-id>` | comments under a video |
+| `tt replies <url-or-id> <comment-id>` | replies under one comment |
+| `tt hashtag <name>` | a hashtag record, or its videos with `--videos` |
+| `tt sound <url-or-id>` | a sound record, or its videos with `--videos` |
+| `tt search <query>` | mixed video and user hits |
+| `tt users <query>` | user search hits |
+| `tt trending` | the logged-out recommend feed |
+| `tt discover` | walks the public graph from seeds and ranks the hottest nodes |
+| `tt raw <url>` | a page's raw universal-data blob |
+
+Every command also answers over HTTP (`tt serve`) and as an MCP tool (`tt mcp`).
+Full reference and guides live at [tiktok-cli.tamnd.com](https://tiktok-cli.tamnd.com).
 
 ## Usage
 
