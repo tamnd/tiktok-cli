@@ -81,6 +81,7 @@ tt is an independent tool and is not affiliated with ByteDance or TikTok.`,
 		app.hashtagCmd(),
 		app.soundCmd(),
 		app.trendingCmd(),
+		app.discoverCmd(),
 		app.rawCmd(),
 		newVersionCmd(),
 	)

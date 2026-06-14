@@ -36,6 +36,7 @@ tt hashtag minecraft --videos -n 50
 tt sound 7106594280055130923 --videos
 tt search "study with me" -n 20
 tt trending -n 30
+tt discover --seed-video 7106594312292453675 --top 20
 ```
 
 Records come out as table, JSON, JSONL, CSV, TSV, url, or raw:
@@ -79,6 +80,12 @@ a residential browser session they answer. From a datacenter IP they are often
 gated. `tt posts`, `tt comments`, `tt search`, and `tt trending` ride this
 plane. When the firewall gates a call, `tt` exits 4 with a clear message instead
 of pretending it found nothing.
+
+`tt discover` walks the public graph from one or more seeds and ranks the
+hottest users, videos, hashtags, and sounds it reaches. It crosses both planes,
+so from a datacenter IP it reaches what the page blobs give (a video's author,
+sound, and mentioned users) and records every list edge it could not page. See
+the [discovery guide](https://tiktok-cli.tamnd.com/guides/discovering-hot-nodes/).
 
 ## Exit codes
 

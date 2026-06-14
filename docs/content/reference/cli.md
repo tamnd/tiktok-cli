@@ -27,6 +27,7 @@ datacenter IP.
 | `hashtag <name>` | SSR/API | Hashtag record, or its videos with `--videos` |
 | `sound <url\|id>` | SSR/API | Sound record, or its videos with `--videos` |
 | `trending` | API | Logged-out recommend feed |
+| `discover` | SSR/API | Walk the public graph from seeds and rank the hottest nodes |
 | `raw <url>` | SSR | The page's universal-data blob as pretty JSON |
 | `version` | | Print the version and exit |
 
@@ -45,6 +46,12 @@ datacenter IP.
   field.
 - `hashtag`, `sound`: `--videos` emits the video list instead of the header
   record.
+- `discover`: seed with `--seed`, `--seed-tag`, `--seed-sound`, `--seed-video`,
+  `--seed-search`, or `--trending` (at least one). `--depth` caps hops,
+  `--fanout` neighbors per node, `--max-nodes` and `--max-requests` bound the
+  walk, `--top` and `--min-score` rank the output, `--kind` filters emitted
+  kinds, and `--edges path` writes the traversed edges as JSONL. See the
+  [discovery guide](/guides/discovering-hot-nodes/).
 
 ## Global flags
 
