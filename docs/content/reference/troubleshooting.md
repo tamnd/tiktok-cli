@@ -17,13 +17,17 @@ challenge or an empty body instead.
 
 When `tt` sees that, it exits 4 with a clear message rather than pretending it
 found nothing. The data is real and reachable, just not from where you are
-calling. Run the command from a residential network, or stick to the SSR
-commands (`video`, `hashtag`, `sound`, `raw`) which read the page's own JSON and
-are not gated the same way.
+calling. Run the command from a residential network, or stick to `video` and
+`raw`, which read the video page's own JSON and come back from anywhere.
 
-The asymmetry is real and worth knowing: a video page usually serves its full
-blob even from a datacenter IP, while the matching profile page may return the
-challenge. So `tt video` tends to work where `tt user` and `tt posts` do not.
+The asymmetry is real and worth knowing. A video page serves its full blob even
+from a datacenter IP, so `tt video` and `tt raw` work everywhere. A profile page
+is stricter: from some IPs it returns the full record and from others the
+challenge, so `tt user` is hit or miss by where you call from. The tag and music
+pages are stricter still. They load from anywhere, but from a datacenter IP
+TikTok ships the page with the hashtag or sound detail node stripped out, so
+`tt hashtag` and `tt sound` come back empty (exit 3) even though the page itself
+loaded. The signed `/api/*` commands stay gated regardless.
 
 ## Requests start failing or returning 429
 

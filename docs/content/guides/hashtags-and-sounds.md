@@ -45,4 +45,8 @@ tt hashtag minecraft --videos -n 200 -o jsonl \
 ```
 
 The video list commands ride the API plane, so they may exit 4 from a datacenter
-IP. The hashtag and sound header records read the page directly and are reliable.
+IP. The header records read the page directly, but TikTok ships the tag and music
+pages with the detail node stripped out for some callers, so from a datacenter IP
+the header can come back empty (exit 3) even though the page loaded. From a
+residential session both the header and, with `--videos`, the list answer. The
+`video` and `raw` commands are the two that come back from anywhere.
