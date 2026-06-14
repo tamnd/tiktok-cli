@@ -1,10 +1,16 @@
 # tt
 
-A command line for TikTok.
+A command line for TikTok. `tt` reads public TikTok data and prints clean,
+pipeable records. One pure-Go binary, no API key, no login.
 
-`tt` is a single pure-Go binary. It speaks to tiktok over plain
-HTTPS, shapes the responses into clean records, and pipes into the rest of your
-tools. No API key, nothing to run alongside it.
+It reads the same public surface a logged-out browser sees: the server rendered
+universal-data blob embedded in each page, and the `www.tiktok.com/api/*`
+endpoints the page's own JavaScript calls, signed the way the web client signs
+them. Every request is paced, retried on transient failures, and sent with an
+honest User-Agent.
+
+`tt` is an independent tool. It is not affiliated with, authorized, or endorsed
+by ByteDance or TikTok.
 
 ## Install
 
@@ -12,30 +18,87 @@ tools. No API key, nothing to run alongside it.
 go install github.com/tamnd/tiktok-cli/cmd/tt@latest
 ```
 
-Or grab a prebuilt binary from the [releases](https://github.com/tamnd/tiktok-cli/releases), or run
-the container image:
+Or grab a prebuilt binary from the [releases](https://github.com/tamnd/tiktok-cli/releases),
+or run the container image:
 
 ```bash
-docker run --rm ghcr.io/tamnd/tt:latest --help
+docker run --rm ghcr.io/tamnd/tiktok:latest --help
 ```
 
 ## Usage
 
 ```bash
-tt --help
-tt version
+tt video https://www.tiktok.com/@tiktok/video/7106594312292453675
+tt user tiktok
+tt posts @tiktok -n 30
+tt comments 7106594312292453675 --author tiktok
+tt hashtag minecraft --videos -n 50
+tt sound 7106594280055130923 --videos
+tt search "study with me" -n 20
+tt trending -n 30
 ```
 
-This is a fresh scaffold. The command tree starts with `version`; build out the
-real commands in `cli/` on top of the `tiktok` library package.
+Records come out as table, JSON, JSONL, CSV, TSV, url, or raw:
+
+```bash
+tt video 7106594312292453675 --author tiktok -o json
+tt posts @tiktok -o csv --fields id,desc,digg_count,play_count
+tt trending -o url            # just the links
+tt user tiktok --template '{{.unique_id}} {{.follower_count}}'
+```
+
+### Global flags
+
+```
+-o, --output      table|json|jsonl|csv|tsv|url|raw   (auto: table on a TTY, jsonl when piped)
+    --fields      comma-separated columns to include
+    --no-header   omit the header row in table/csv/tsv
+    --template    Go text/template applied per record
+-n, --limit       max records (0 = command default)
+-j, --jobs        concurrent fetches where a command pages
+-q, --quiet       suppress progress on stderr
+    --delay       min spacing between requests (default 600ms)
+    --timeout     per-request timeout (default 30s)
+    --retries     retry attempts on 429/5xx (default 5)
+    --user-agent  override the User-Agent
+```
+
+## Two planes, two reliabilities
+
+TikTok serves data through two channels that fail differently.
+
+The **SSR plane** reads the JSON a logged-out page already ships. A video page
+carries the whole video record, its author, its sound, its hashtags, and its
+counters, with no signing. `tt video`, `tt hashtag`, `tt sound`, and `tt raw`
+ride it and are the reliable commands.
+
+The **API plane** calls `www.tiktok.com/api/*` for listings, comments, and
+search. Those calls carry an X-Bogus signature and an msToken, and they sit
+behind a Web Application Firewall that scores the caller's IP and session. From
+a residential browser session they answer. From a datacenter IP they are often
+gated. `tt posts`, `tt comments`, `tt search`, and `tt trending` ride this
+plane. When the firewall gates a call, `tt` exits 4 with a clear message instead
+of pretending it found nothing.
+
+## Exit codes
+
+```
+0  success, at least one record
+1  error
+2  usage error
+3  no data (a valid empty result)
+4  walled (the firewall gated this surface; it needs a residential session)
+```
 
 ## Development
 
 ```
-cmd/tt/   thin main, wires cli.Root into fang
-cli/                 the cobra command tree
-tiktok/                the library: HTTP client and data models
-docs/                tago documentation site
+cmd/tt/        thin main, wires cli.Root into fang
+cli/           the cobra command tree and the output renderer
+tiktok/        the library: HTTP client, SSR parsing, signed API calls, models
+pkg/ttsign/    msToken and the X-Bogus / a_bogus signatures
+pkg/tthtml/    pull a named <script> JSON blob out of a page
+docs/          tago documentation site
 ```
 
 ```bash
@@ -55,8 +118,9 @@ git tag v0.1.0
 git push --tags
 ```
 
-The Homebrew and Scoop steps self-disable until their tokens exist, so the first
-release works with no extra secrets.
+The image tag carries no `v` prefix (`ghcr.io/tamnd/tiktok:0.1.0`). The Homebrew
+and Scoop steps self-disable until their tokens exist, so the first release
+works with no extra secrets.
 
 ## License
 
