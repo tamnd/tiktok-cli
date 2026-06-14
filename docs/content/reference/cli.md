@@ -62,12 +62,17 @@ datacenter IP.
 | `--no-header` | false | omit the header row in table/csv/tsv |
 | `--template` | | Go text/template applied per record |
 | `-n, --limit` | 0 | max records (0 = command default) |
-| `-j, --jobs` | 4 | concurrent fetches where a command pages |
 | `-q, --quiet` | false | suppress progress on stderr |
-| `--delay` | 600ms | minimum spacing between requests |
+| `--rate` | 600ms | minimum spacing between requests |
 | `--timeout` | 30s | per-request timeout |
 | `--retries` | 5 | retry attempts on 429/5xx |
 | `--user-agent` | desktop Chrome | User-Agent sent with each request |
+| `--db` | | tee every record into a store (e.g. `out.db`) |
+
+`tt` is built on the [any-cli/kit](https://github.com/tamnd/any-cli) framework,
+so the same commands are also served over HTTP (`tt serve`) and as MCP tools
+(`tt mcp`), and the package works as a `tiktok://` resource-URI driver for
+[ant](https://github.com/tamnd/ant).
 
 ## Exit codes
 
@@ -78,3 +83,4 @@ datacenter IP.
 | 2 | usage error |
 | 3 | no data (a valid empty result) |
 | 4 | walled (the firewall gated this surface) |
+| 6 | not found (the handle, video, hashtag, or sound does not exist) |

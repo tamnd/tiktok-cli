@@ -1,14 +1,13 @@
-// Command tt is a single-binary command line for tiktok.
+// Command tt is a single-binary command line for TikTok.
 package main
 
 import (
 	"context"
-	"errors"
 	"os"
 	"os/signal"
 	"syscall"
 
-	"github.com/charmbracelet/fang"
+	"github.com/tamnd/any-cli/kit"
 	"github.com/tamnd/tiktok-cli/cli"
 )
 
@@ -16,17 +15,8 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	root := cli.Root()
-	// fang gives styled help, errors, and shell completion for free; the command
-	// tree and its exit-code mapping stay in the cli package.
-	if err := fang.Execute(ctx, root,
-		fang.WithVersion(cli.Version),
-		fang.WithNotifySignal(os.Interrupt, syscall.SIGTERM),
-	); err != nil {
-		var ee *cli.ExitError
-		if errors.As(err, &ee) {
-			os.Exit(ee.Code)
-		}
-		os.Exit(1)
-	}
+	// Build metadata lives on the cli package vars; goreleaser injects them with
+	// -ldflags at release time. kit.Run drives the whole CLI and returns the
+	// process exit code.
+	os.Exit(kit.Run(ctx, cli.NewApp()))
 }
