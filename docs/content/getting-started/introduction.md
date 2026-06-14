@@ -4,6 +4,8 @@ description: "What tt is and how it is put together."
 weight: 10
 ---
 
+![tt reading a video into a table and piping it through jq](https://tiktok-cli.tamnd.com/demo.gif)
+
 A command line for TikTok.
 
 tt is a single binary. It reads public TikTok data over plain HTTPS, shapes the
