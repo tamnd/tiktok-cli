@@ -72,7 +72,7 @@ nfpms:
 
 dockers_v2:
   - images:
-      - ghcr.io/tamnd/tt
+      - ghcr.io/tamnd/tiktok
     tags:
       - "{{ .Version }}"
       - latest
