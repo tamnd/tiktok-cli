@@ -1,0 +1,10 @@
+title       = "tt"
+baseURL     = "https://tiktok-cli.tamnd.com/"
+description = "Read public TikTok data from the command line and print clean records."
+contentDir  = "content"
+outputDir   = "public"
+theme       = "tago-doks"
+syntaxHighlight = "true"
+
+[params]
+github = "https://github.com/tamnd/tiktok-cli"
