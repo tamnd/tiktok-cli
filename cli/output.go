@@ -114,7 +114,7 @@ func (r *Renderer) renderTemplate(items []any) error {
 		return fmt.Errorf("parse --template: %w", err)
 	}
 	for _, it := range items {
-		if err := t.Execute(r.w, it); err != nil {
+		if err := t.Execute(r.w, toMap(it)); err != nil {
 			return err
 		}
 		_, _ = fmt.Fprintln(r.w)

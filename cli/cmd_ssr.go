@@ -1,6 +1,9 @@
 package cli
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/spf13/cobra"
 	"github.com/tamnd/tiktok-cli/tiktok"
 )
@@ -123,7 +126,7 @@ func (a *App) rawCmd() *cobra.Command {
 			if err != nil {
 				return mapErr(err)
 			}
-			cmd.Println(string(out))
+			_, _ = fmt.Fprintln(os.Stdout, string(out))
 			return nil
 		},
 	}
