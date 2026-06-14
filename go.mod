@@ -2,7 +2,7 @@ module github.com/tamnd/tiktok-cli
 
 go 1.26
 
-require github.com/tamnd/any-cli v0.2.0
+require github.com/tamnd/any-cli v0.3.3
 
 require (
 	charm.land/lipgloss/v2 v2.0.0-beta.3.0.20251106193318-19329a3e8410 // indirect
