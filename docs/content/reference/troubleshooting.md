@@ -33,7 +33,7 @@ loaded. The signed `/api/*` commands stay gated regardless.
 
 TikTok rate-limits like any public site. `tt` already paces requests and retries
 the transient failures, but a hard limit still means backing off. Raise the gap
-between requests with `--delay` (for example `--delay 1s`) and retry later. A
+between requests with `--rate` (for example `--rate 1s`) and retry later. A
 burst of 429 or 5xx responses is the site asking you to slow down.
 
 ## Nothing is found for something you expected

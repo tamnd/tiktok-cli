@@ -48,6 +48,12 @@ tt trending -o url            # just the links
 tt user tiktok --template '{{.unique_id}} {{.follower_count}}'
 ```
 
+The same operations are also available over HTTP and as an MCP tool set, and the
+package doubles as a [resource-URI driver](#use-it-as-a-resource-uri-driver) for
+[ant](https://github.com/tamnd/ant). All of it is wired by the
+[any-cli/kit](https://github.com/tamnd/any-cli) framework, so one declaration of
+each command drives every surface.
+
 ### Global flags
 
 ```
@@ -56,12 +62,12 @@ tt user tiktok --template '{{.unique_id}} {{.follower_count}}'
     --no-header   omit the header row in table/csv/tsv
     --template    Go text/template applied per record
 -n, --limit       max records (0 = command default)
--j, --jobs        concurrent fetches where a command pages
 -q, --quiet       suppress progress on stderr
-    --delay       min spacing between requests (default 600ms)
+    --rate        min spacing between requests (default 600ms)
     --timeout     per-request timeout (default 30s)
     --retries     retry attempts on 429/5xx (default 5)
     --user-agent  override the User-Agent
+    --db          tee every record into a store (e.g. out.db)
 ```
 
 ## Two planes, two reliabilities
@@ -95,14 +101,46 @@ the [discovery guide](https://tiktok-cli.tamnd.com/guides/discovering-hot-nodes/
 2  usage error
 3  no data (a valid empty result)
 4  walled (the firewall gated this surface; it needs a residential session)
+6  not found (the handle, video, hashtag, or sound does not exist)
+```
+
+## Serve it
+
+The same operations are available over HTTP and as an MCP tool set for agents,
+with no extra code:
+
+```bash
+tt serve --addr :7777    # GET /v1/user/<handle> returns NDJSON
+tt mcp                   # speak MCP over stdio
+```
+
+## Use it as a resource-URI driver
+
+`tt` registers a `tiktok` domain the way a program registers a database driver
+with `database/sql`. A host enables it with one blank import:
+
+```go
+import _ "github.com/tamnd/tiktok-cli/tiktok"
+```
+
+Then [ant](https://github.com/tamnd/ant) (or any program that links the package)
+dereferences `tiktok://` URIs:
+
+```bash
+ant get tiktok://user/tiktok                  # the profile record
+ant get tiktok://video/7106594312292453675    # one video
+ant ls  tiktok://user/tiktok                   # the user's videos
+ant cat tiktok://video/7106594312292453675     # just the description text
+ant url tiktok://hashtag/minecraft             # the live https URL
 ```
 
 ## Development
 
 ```
-cmd/tt/        thin main, wires cli.Root into fang
-cli/           the cobra command tree and the output renderer
-tiktok/        the library: HTTP client, SSR parsing, signed API calls, models
+cmd/tt/        thin main: hands cli.NewApp to kit.Run
+cli/           assembles the kit App and the version and raw escape-hatch commands
+tiktok/        the library: HTTP client, SSR parsing, signed API calls, models,
+               the kit operations, and the tiktok:// driver
 pkg/ttsign/    msToken and the X-Bogus / a_bogus signatures
 pkg/tthtml/    pull a named <script> JSON blob out of a page
 docs/          tago documentation site
