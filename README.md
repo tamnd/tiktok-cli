@@ -63,6 +63,7 @@ each command drives every surface.
     --template    Go text/template applied per record
 -n, --limit       max records (0 = command default)
 -q, --quiet       suppress progress on stderr
+    --color       auto|always|never  (color tables and JSON on a terminal)
     --rate        min spacing between requests (default 600ms)
     --timeout     per-request timeout (default 30s)
     --retries     retry attempts on 429/5xx (default 5)
