@@ -12,7 +12,21 @@ var (
 	reMusicID = regexp.MustCompile(`/music/[^/?]*-(\d+)`)
 	reDigits  = regexp.MustCompile(`^\d+$`)
 	reHandle  = regexp.MustCompile(`@([A-Za-z0-9_.]+)`)
+	reTagURL  = regexp.MustCompile(`/tag/([^/?#]+)`)
 )
+
+// tagName recognizes a hashtag reference: a leading '#', or a /tag/{name} url.
+// A bare word is intentionally not a hashtag, so a host reads it as a @handle.
+func tagName(in string) (string, bool) {
+	in = strings.TrimSpace(in)
+	if name, ok := strings.CutPrefix(in, "#"); ok && name != "" {
+		return name, true
+	}
+	if m := reTagURL.FindStringSubmatch(in); m != nil {
+		return m[1], true
+	}
+	return "", false
+}
 
 // ParseHandle pulls a bare @handle out of "tiktok", "@tiktok", or a full
 // profile url.
