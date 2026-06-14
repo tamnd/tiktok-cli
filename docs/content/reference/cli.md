@@ -63,6 +63,7 @@ datacenter IP.
 | `--template` | | Go text/template applied per record |
 | `-n, --limit` | 0 | max records (0 = command default) |
 | `-q, --quiet` | false | suppress progress on stderr |
+| `--color` | auto | `auto\|always\|never`; color tables and JSON on a terminal |
 | `--rate` | 600ms | minimum spacing between requests |
 | `--timeout` | 30s | per-request timeout |
 | `--retries` | 5 | retry attempts on 429/5xx |
