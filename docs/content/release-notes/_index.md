@@ -11,5 +11,8 @@ packages (deb, rpm, apk), a multi-arch container image on GHCR, and entries for
 the package managers. Binaries are pure Go, so there is nothing to install
 alongside them.
 
+- [v0.2.0](/release-notes/v0-2-0/) — the commands now run on the any-cli/kit
+  framework: the same reads serve over HTTP and MCP and back a `tiktok://`
+  resource driver, with `--rate` and `--db` joining the global flags.
 - [v0.1.0](/release-notes/v0-1-0/) — the first public release: the full read
   surface across both planes, the discovery walk, and the signing packages.
