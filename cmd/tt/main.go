@@ -3,6 +3,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"os"
 	"os/signal"
 	"syscall"
@@ -22,6 +23,10 @@ func main() {
 		fang.WithVersion(cli.Version),
 		fang.WithNotifySignal(os.Interrupt, syscall.SIGTERM),
 	); err != nil {
+		var ee *cli.ExitError
+		if errors.As(err, &ee) {
+			os.Exit(ee.Code)
+		}
 		os.Exit(1)
 	}
 }
